@@ -1,7 +1,4 @@
-import { randomBytes, scrypt, timingSafeEqual } from 'node:crypto'
-import { promisify } from 'node:util'
-
-const scryptAsync = promisify(scrypt)
+import { randomBytes, scrypt, timingSafeEqual, type ScryptOptions } from 'node:crypto'
 
 // Password hashing with Node's built-in scrypt — no native modules, so it
 // runs on any host (the argon2 prebuilt binary needs a newer glibc than
@@ -13,9 +10,23 @@ const P = 1
 const KEYLEN = 64
 const SALT_BYTES = 16
 
+function scryptAsync(
+  password: string,
+  salt: Buffer,
+  keylen: number,
+  options: ScryptOptions,
+): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    scrypt(password, salt, keylen, options, (error, derived) => {
+      if (error) reject(error)
+      else resolve(derived)
+    })
+  })
+}
+
 export async function hashPassword(password: string): Promise<string> {
   const salt = randomBytes(SALT_BYTES)
-  const derived = (await scryptAsync(password, salt, KEYLEN, { N, r: R, p: P })) as Buffer
+  const derived = await scryptAsync(password, salt, KEYLEN, { N, r: R, p: P })
   return ['scrypt', N, R, P, salt.toString('base64'), derived.toString('base64')].join('$')
 }
 
@@ -29,6 +40,6 @@ export async function verifyPassword(stored: string, password: string): Promise<
   const salt = Buffer.from(parts[4] ?? '', 'base64')
   const expected = Buffer.from(parts[5] ?? '', 'base64')
   if (salt.length === 0 || expected.length === 0) return false
-  const derived = (await scryptAsync(password, salt, expected.length, { N: n, r, p })) as Buffer
+  const derived = await scryptAsync(password, salt, expected.length, { N: n, r, p })
   return derived.length === expected.length && timingSafeEqual(derived, expected)
 }
