@@ -1,4 +1,4 @@
-import argon2 from 'argon2'
+import { hashPassword } from '@/lib/password'
 import { NextResponse } from 'next/server'
 import { registerSchema } from '@/features/auth/schemas/register.schema'
 import { checkRateLimit } from '@/lib/security/rate-limit'
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
     if (existing)
       return NextResponse.json({ error: 'An account with this email already exists.' }, { status: 409 })
 
-    const passwordHash = await argon2.hash(parsed.data.password)
+    const passwordHash = await hashPassword(parsed.data.password)
     const user = await db.user.create({
       data: { name: parsed.data.name, email, passwordHash, role: 'CUSTOMER' },
     })
@@ -74,3 +74,4 @@ export async function POST(request: Request) {
     )
   }
 }
+
