@@ -148,13 +148,13 @@ export function EnquiryCard({ property }: { property: Property }) {
       )}
       <div className="mt-5 grid grid-cols-2 gap-2 border-t border-line pt-5">
         <a
-          href="tel:+8801700000000"
+          href="tel:+8801810774478"
           className="flex items-center justify-center gap-2 rounded-xl border border-line bg-paper py-3 text-xs font-bold transition hover:border-terracotta hover:text-terracotta"
         >
           <Phone className="h-3.5 w-3.5" /> {t('callUs')}
         </a>
         <a
-          href="https://wa.me/8801700000000"
+          href="https://wa.me/8801810774478"
           className="flex items-center justify-center gap-2 rounded-xl border border-line bg-paper py-3 text-xs font-bold transition hover:border-moss hover:text-moss"
         >
           <MessageCircle className="h-3.5 w-3.5" /> {t('whatsapp')}
@@ -166,3 +166,4 @@ export function EnquiryCard({ property }: { property: Property }) {
     </aside>
   )
 }
+

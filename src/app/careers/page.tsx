@@ -18,7 +18,7 @@ export default function CareersPage() {
           <em className="font-normal text-terracotta">{t('careers.title2')}</em>
         </h1>
         <p className="mt-7 max-w-lg text-sm leading-7 text-ink/60">{t('careers.copy')}</p>
-        <ButtonLink href="mailto:careers@swadheen.example" className="mt-9">
+        <ButtonLink href="mailto:info@eliteroyalhomes.com" className="mt-9">
           {t('careers.cta')}
         </ButtonLink>
       </main>
@@ -26,3 +26,4 @@ export default function CareersPage() {
     </div>
   )
 }
+

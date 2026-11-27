@@ -200,7 +200,7 @@ export function ContactPage() {
             </h1>
             <p className="mt-7 max-w-sm text-sm leading-7 text-ink/60">{t('contact.intro')}</p>
             <div className="mt-10 space-y-5 text-sm">
-              <a href="tel:+8801700000000" className="flex items-center gap-4">
+              <a href="tel:+8801810774478" className="flex items-center gap-4">
                 <span className="flex h-10 w-10 items-center justify-center rounded-full bg-stone text-terracotta">
                   <Phone className="h-4 w-4" />
                 </span>
@@ -208,10 +208,10 @@ export function ContactPage() {
                   <span className="block text-[10px] font-bold uppercase tracking-[.14em] text-ink/40">
                     {t('form.call')}
                   </span>
-                  <span className="mt-1 block font-semibold">+880 1700 000 000</span>
+                  <span className="mt-1 block font-semibold">+880 1810 774 478</span>
                 </span>
               </a>
-              <a href="mailto:hello@swadheen.example" className="flex items-center gap-4">
+              <a href="mailto:info@eliteroyalhomes.com" className="flex items-center gap-4">
                 <span className="flex h-10 w-10 items-center justify-center rounded-full bg-stone text-terracotta">
                   <Mail className="h-4 w-4" />
                 </span>
@@ -219,7 +219,7 @@ export function ContactPage() {
                   <span className="block text-[10px] font-bold uppercase tracking-[.14em] text-ink/40">
                     {t('form.emailShort')}
                   </span>
-                  <span className="mt-1 block font-semibold">hello@swadheen.example</span>
+                  <span className="mt-1 block font-semibold">info@eliteroyalhomes.com</span>
                 </span>
               </a>
               <p className="flex items-center gap-4">
@@ -590,3 +590,4 @@ export function DbProjectPage({
     </div>
   )
 }
+
