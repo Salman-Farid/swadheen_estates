@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client'
-import argon2 from 'argon2'
+import { hashPassword } from '../src/lib/password'
 import { properties as catalogue } from '../src/data/properties'
 import { buildPropertyWriteData } from '../src/features/listings/services/property-persistence'
 
@@ -42,7 +42,7 @@ async function main() {
       name: 'Ayesha Rahman',
       role: 'MANAGER',
       passwordHash: process.env.SEED_ADMIN_PASSWORD
-        ? await argon2.hash(process.env.SEED_ADMIN_PASSWORD)
+        ? await hashPassword(process.env.SEED_ADMIN_PASSWORD)
         : null,
     },
   })
@@ -122,3 +122,4 @@ async function main() {
 }
 
 main().finally(() => prisma.$disconnect())
+

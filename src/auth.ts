@@ -2,7 +2,7 @@ import NextAuth from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 import Google from 'next-auth/providers/google'
 import type { Provider } from 'next-auth/providers'
-import argon2 from 'argon2'
+import { verifyPassword } from '@/lib/password'
 import { z } from 'zod'
 import { db } from '@/lib/db'
 
@@ -22,7 +22,7 @@ const providers: Provider[] = [
         where: { email: parsed.data.email.toLowerCase() },
         select: { id: true, name: true, email: true, role: true, passwordHash: true },
       })
-      if (!user?.passwordHash || !(await argon2.verify(user.passwordHash, parsed.data.password))) return null
+      if (!user?.passwordHash || !(await verifyPassword(user.passwordHash, parsed.data.password))) return null
       return {
         id: user.id,
         name: user.name,
@@ -74,3 +74,4 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   pages: { signIn: '/login' },
 })
+
