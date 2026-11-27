@@ -6,6 +6,7 @@ import { checkRateLimit } from '@/lib/security/rate-limit'
 import { isSameOrigin } from '@/lib/security/validate-origin'
 import { env } from '@/lib/env'
 import { getPropertyBySlug } from '@/data/properties'
+import { sendAdminPush } from '@/lib/push'
 
 function getClientKey(request: Request) {
   return request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'local-client'
@@ -132,6 +133,13 @@ export async function POST(request: Request) {
             },
           },
         })
+        // Push the same alert to the admin mobile app. No-op until the
+        // Firebase env is configured on the host; never blocks the reply.
+        void sendAdminPush({
+          title: `New viewing request \u2014 ${lead.name}`,
+          body: propertyTitle ? `${propertyTitle} \u00b7 ${lead.phone}` : lead.phone,
+          data: { type: 'new_lead', leadId: lead.id },
+        })
       } catch (error) {
         console.error(
           'lead_notification_failed',
@@ -145,3 +153,4 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'We could not save that request. Please try again.' }, { status: 500 })
   }
 }
+
