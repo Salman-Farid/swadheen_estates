@@ -21,7 +21,11 @@ export function projectDto(row: ProjectRecord): AdminProjectDto {
     location: row.location,
     description: row.description,
     coverImage: row.coverImage,
-    gallery: row.gallery ?? [],
+    // gallery is a Json column (MySQL has no scalar lists): coerce to
+    // the string array the DTO promises.
+    gallery: Array.isArray(row.gallery)
+      ? row.gallery.filter((g): g is string => typeof g === 'string')
+      : [],
     videoUrl: row.videoUrl ?? null,
     totalUnits: row.totalUnits,
     deliveredAt: row.deliveredAt ? row.deliveredAt.toISOString() : null,
@@ -29,3 +33,4 @@ export function projectDto(row: ProjectRecord): AdminProjectDto {
     updatedAt: row.updatedAt.toISOString(),
   }
 }
+
