@@ -21,7 +21,8 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@prisma/client": ["./src/generated/prisma"]
     }
   },
   "include": [
@@ -34,3 +35,4 @@
   ],
   "exclude": ["node_modules"]
 }
+
