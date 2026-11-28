@@ -112,7 +112,7 @@ h2.display-type {
   line-height: 1.12 !important;
   letter-spacing: -0.015em !important;
 }
-h3.display-type {
+h3.display-type:not(.journey-display) {
   font-size: clamp(1.45rem, 2.8vw, 2.1rem) !important;
   line-height: 1.2 !important;
   letter-spacing: -0.01em !important;
@@ -129,7 +129,7 @@ html[data-locale='bn'] h1.display-type:not(.hero-display) {
 html[data-locale='bn'] h2.display-type {
   line-height: 1.22 !important;
 }
-html[data-locale='bn'] h3.display-type {
+html[data-locale='bn'] h3.display-type:not(.journey-display) {
   line-height: 1.28 !important;
 }
 html[data-locale='bn'] body {
