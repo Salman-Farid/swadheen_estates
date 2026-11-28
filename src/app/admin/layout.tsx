@@ -7,6 +7,7 @@ export default async function AdminLayout({ children }: Readonly<{ children: Rea
   const session = await auth()
   const role = session?.user?.role
   if (!session?.user || !role || !['SUPER_ADMIN', 'MANAGER', 'SALES_AGENT', 'CONTENT_EDITOR'].includes(role))
-    redirect('/login?next=/admin')
+    redirect('/admin-login')
   return children
 }
+

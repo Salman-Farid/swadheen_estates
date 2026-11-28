@@ -13,7 +13,7 @@
   }
   body {
     @apply bg-paper text-ink antialiased;
-    font-family: var(--font-sans), 'Noto Sans Bengali', 'Manrope', 'Avenir Next', sans-serif;
+    font-family: var(--font-sans);
     font-feature-settings: 'cv11', 'ss01';
   }
   ::selection {
@@ -35,7 +35,7 @@
 
 @layer components {
   .display-type {
-    font-family: var(--font-display), 'Iowan Old Style', Baskerville, Georgia, serif;
+    font-family: var(--font-display);
     font-weight: 600;
     letter-spacing: -0.045em;
   }
@@ -97,8 +97,7 @@
    and needs extra leading for matras. Scale display type down and relax
    the tight Latin-optimized tracking when the active locale is bn. */
 html[data-locale='bn'] .display-type {
-  font-family: var(--font-display), 'Noto Serif Bengali', 'Noto Sans Bengali', 'Iowan Old Style',
-    Georgia, serif;
+  font-family: var(--font-display);
   letter-spacing: -0.01em;
 }
 html[data-locale='bn'] h1.display-type {
@@ -145,3 +144,4 @@ html[data-motion-reduced='true'] *::after {
   animation-iteration-count: 1 !important;
   transition-duration: 0.01ms !important;
 }
+

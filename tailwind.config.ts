@@ -16,8 +16,8 @@ const config: Config = {
         gold: 'hsl(var(--gold) / <alpha-value>)',
       },
       fontFamily: {
-        display: ['var(--font-display)', 'Iowan Old Style', 'Baskerville', 'Georgia', 'serif'],
-        sans: ['var(--font-sans)', 'Avenir Next', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        display: ['var(--font-display)', 'sans-serif'],
+        sans: ['var(--font-sans)', 'sans-serif'],
       },
       boxShadow: {
         soft: '0 16px 50px -28px hsl(var(--ink) / 0.28)',
@@ -51,3 +51,4 @@ const config: Config = {
 }
 
 export default config
+
