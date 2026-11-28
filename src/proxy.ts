@@ -15,7 +15,7 @@ export function proxy(request: NextRequest) {
     "media-src 'self' https:",
     "font-src 'self' https://fonts.gstatic.com",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-    "frame-src 'self' https://www.youtube-nocookie.com https://www.youtube.com",
+    "frame-src 'self' https://www.youtube-nocookie.com https://www.youtube.com https://www.google.com https://maps.google.com",
     // Next.js emits both external runtime chunks and inline hydration payloads.
     // Keep same-origin scripts working in production; the nonce remains available
     // to application scripts that opt into it.
