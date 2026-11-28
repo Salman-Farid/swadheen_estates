@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client'
 import { hashPassword } from '../src/lib/password'
 import { properties as staticProperties } from '../src/data/properties'
 import { staticProjects } from '../src/data/projects'
+import { projectVideos as staticVideos } from '../src/data/videos'
 import { buildWebFields } from '../src/features/listings/services/web-fields'
 import type { Property } from '../src/types/property'
 
@@ -15,8 +16,9 @@ const img = (id: string) =>
 // - The admin account's display name is just "Admin" — no personal name.
 // - The catalogue stays FULL: the original 12 listings and The Grove project
 //   are kept, expanded to 24 properties and 21 projects with photography
-//   sourced from Unsplash. Everything is upserted by slug, so re-running the
-//   seed on every deploy never duplicates rows.
+//   sourced from Unsplash. Seeding is create-only by slug/youtubeId, so
+//   re-running it on every deploy never duplicates rows and never overwrites
+//   edits made later in the admin panel.
 // ---------------------------------------------------------------------------
 
 type ProjectSeed = {
@@ -237,16 +239,22 @@ const TYPE_TO_DB = { Land: 'LAND', House: 'HOUSE', Flat: 'FLAT' } as const
 const STATUS_TO_DB = { Available: 'AVAILABLE', Booked: 'BOOKED', Sold: 'SOLD', Upcoming: 'UPCOMING' } as const
 
 async function syncProject(seed: ProjectSeed) {
-  const data = {
-    name: seed.name,
-    location: seed.location,
-    description: seed.description,
-    coverImage: seed.coverImage,
-    gallery: seed.gallery,
-    totalUnits: seed.totalUnits,
-    deliveredAt: seed.deliveredAt ? new Date(seed.deliveredAt) : null,
-  }
-  await prisma.project.upsert({ where: { slug: seed.slug }, update: data, create: { slug: seed.slug, ...data } })
+  // Create-only (same rule as the videos): once a row exists, the admin
+  // panel owns it and later deploys must not overwrite the admin's edits.
+  const existing = await prisma.project.findUnique({ where: { slug: seed.slug }, select: { id: true } })
+  if (existing) return
+  await prisma.project.create({
+    data: {
+      slug: seed.slug,
+      name: seed.name,
+      location: seed.location,
+      description: seed.description,
+      coverImage: seed.coverImage,
+      gallery: seed.gallery,
+      totalUnits: seed.totalUnits,
+      deliveredAt: seed.deliveredAt ? new Date(seed.deliveredAt) : null,
+    },
+  })
 }
 
 async function syncProperty(property: Property, sortOrder: number) {
@@ -277,7 +285,10 @@ async function syncProperty(property: Property, sortOrder: number) {
     publishedAt: new Date(),
     projectId: project?.id ?? null,
   }
-  await prisma.property.upsert({ where: { slug: property.slug }, update: data, create: { slug: property.slug, ...data } })
+  // Create-only: existing listings belong to the admin panel (see above).
+  const existing = await prisma.property.findUnique({ where: { slug: property.slug }, select: { id: true } })
+  if (existing) return
+  await prisma.property.create({ data: { slug: property.slug, ...data } })
 }
 
 async function main() {
@@ -313,6 +324,52 @@ async function main() {
   // Properties: the original 12 listings, then 12 more.
   const all = [...staticProperties, ...extraProperties]
   for (let i = 0; i < all.length; i++) await syncProperty(all[i], i)
+
+  // Hero images: seed the site's current hero photo once (create-only —
+  // the admin panel's Hero images tab owns the list afterwards).
+  const heroCount = await prisma.heroImage.count()
+  if (heroCount === 0) {
+    await prisma.heroImage.create({
+      data: {
+        url: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2400&q=90',
+        sortOrder: 0,
+      },
+    })
+  }
+
+  // Videos: the site's 9 Shorts + 4 wide films live in the database so the
+  // admin panel controls them — links, titles, order, published state and
+  // shown on the public site (owner's instruction,
+  // 2026-11-28). Matched by project + youtubeId, so re-seeding updates the
+  // catalogue entries instead of duplicating them; videos the admin adds
+  // later are never touched.
+  for (const video of staticVideos) {
+    const project = await prisma.project.findUnique({
+      where: { slug: video.projectSlug },
+      select: { id: true },
+    })
+    if (!project) continue
+    const data = {
+      kind: video.kind,
+      title: video.title,
+      description: video.description,
+      youtubeUrl: video.youtubeUrl,
+      thumbnailUrl: video.thumbnailUrl,
+      published: video.published,
+      sortOrder: video.sortOrder,
+    }
+    const existing = await prisma.projectVideo.findFirst({
+      where: { projectId: project.id, youtubeId: video.youtubeId },
+      select: { id: true },
+    })
+    // Create-only: once a video exists, the admin panel owns it — the seed
+    // never overwrites an admin's edits on later deploys.
+    if (!existing) {
+      await prisma.projectVideo.create({
+        data: { ...data, projectId: project.id, youtubeId: video.youtubeId },
+      })
+    }
+  }
 }
 
 main().finally(() => prisma.$disconnect())

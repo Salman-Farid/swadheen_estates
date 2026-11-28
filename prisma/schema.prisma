@@ -122,6 +122,16 @@ model ProjectVideo {
   @@index([projectId, kind, published, sortOrder])
 }
 
+// Home-page hero screen images, managed from the admin panel (owner's
+// instruction, 2026-11-28). The hero rotates through them in sortOrder.
+model HeroImage {
+  id        String   @id @default(cuid())
+  url       String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Property {
   id          String          @id @default(cuid())
   slug        String          @unique
