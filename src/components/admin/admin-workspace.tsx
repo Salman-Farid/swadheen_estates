@@ -37,6 +37,7 @@ import { formatDateTime, formatPrice } from '@/lib/format'
 import { ListingDialog, type ListingKind } from '@/components/admin/listing-dialog'
 import { MediaDropzone } from '@/components/admin/media-dropzone'
 import { AdminProjectVideoManager } from '@/components/admin/project-video-manager'
+import { AdminHeroImageManager } from '@/components/admin/hero-image-manager'
 import type { AdminProjectDto, AdminPropertyDto } from '@/features/listings/types'
 
 const leads = [
@@ -881,8 +882,10 @@ export function AdminMediaPage() {
     t('admin.tabFloorPlans'),
     t('admin.tabDocuments'),
     t('admin.tabProjectVideos'),
+    t('admin.tabHeroImages'),
   ]
   const videosTab = mediaTabs[5] ?? 'videos'
+  const heroTab = mediaTabs[6] ?? 'hero'
   const imagesTab = mediaTabs[0] ?? 'images'
   const [active, setActive] = useState(imagesTab)
   const [showDropzone, setShowDropzone] = useState(false)
@@ -914,10 +917,14 @@ export function AdminMediaPage() {
             </button>
           ))}
         </div>
-        {showDropzone && active !== videosTab && <MediaDropzone />}
+        {showDropzone && active !== videosTab && active !== heroTab && <MediaDropzone />}
         {active === videosTab ? (
           <div className="mt-6">
             <AdminProjectVideoManager />
+          </div>
+        ) : active === heroTab ? (
+          <div className="mt-6">
+            <AdminHeroImageManager />
           </div>
         ) : (
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

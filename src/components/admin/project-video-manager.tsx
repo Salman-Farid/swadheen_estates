@@ -15,7 +15,6 @@ import {
   X,
 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
-import { projectVideos } from '@/data/videos'
 import { parseYouTubeUrl } from '@/features/videos/schemas/video.schema'
 import type { ProjectVideo, VideoKind } from '@/types/video'
 import { Badge } from '@/components/ui/badge'
@@ -23,8 +22,9 @@ import { Button, ButtonLink } from '@/components/ui/button'
 import { useLocale } from '@/i18n/locale-provider'
 import { cn } from '@/lib/utils'
 
-const storageKey = 'swadheen-project-videos'
-const projects = [
+// Fallback project list, replaced by the live catalogue from
+// /api/admin/listings as soon as it loads.
+const fallbackProjects = [
   { slug: 'the-grove-bashundhara', name: 'The Grove, Bashundhara' },
   { slug: 'parkside-banani', name: 'Parkside Banani' },
 ]
@@ -46,21 +46,12 @@ const emptyForm: FormState = {
   published: true,
 }
 
-function loadLocalVideos(): ProjectVideo[] {
-  if (typeof window === 'undefined') return projectVideos
-  const stored = window.localStorage.getItem(storageKey)
-  if (!stored) return projectVideos
-  try {
-    const parsed = JSON.parse(stored) as ProjectVideo[]
-    return Array.isArray(parsed) ? parsed : projectVideos
-  } catch {
-    return projectVideos
-  }
-}
-
 export function AdminProjectVideoManager({ projectSlug }: { projectSlug?: string }) {
   const { t } = useLocale()
-  const [videos, setVideos] = useState<ProjectVideo[]>(() => loadLocalVideos())
+  // The database is the only source of truth: videos load from the admin API
+  // (published and drafts), and every change is written back through it.
+  const [videos, setVideos] = useState<ProjectVideo[]>([])
+  const [projects, setProjects] = useState(fallbackProjects)
   const [form, setForm] = useState<FormState>({
     ...emptyForm,
     projectSlug: projectSlug ?? emptyForm.projectSlug,
@@ -76,21 +67,36 @@ export function AdminProjectVideoManager({ projectSlug }: { projectSlug?: string
   )
 
   useEffect(() => {
-    if (window.localStorage.getItem(storageKey)) return
-    fetch(`/api/videos${projectSlug ? `?projectSlug=${encodeURIComponent(projectSlug)}` : ''}`)
+    fetch(`/api/admin/videos${projectSlug ? `?projectSlug=${encodeURIComponent(projectSlug)}` : ''}`)
+      .then(async (response) => {
+        if (!response.ok) throw new Error('load failed')
+        const result = (await response.json()) as ProjectVideo[]
+        if (Array.isArray(result)) setVideos(result)
+      })
+      .catch(() => setError(t('videos.savedInBrowserNoSync')))
+    fetch('/api/admin/listings')
       .then(async (response) => {
         if (!response.ok) return
-        const result = (await response.json()) as ProjectVideo[]
-        if (!Array.isArray(result) || result.length === 0) return
-        setVideos(result)
-        window.localStorage.setItem(storageKey, JSON.stringify(result))
+        const data = (await response.json()) as { projects?: { slug: string; name: string }[] }
+        if (data.projects?.length)
+          setProjects(data.projects.map((project) => ({ slug: project.slug, name: project.name })))
       })
       .catch(() => undefined)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectSlug])
 
-  function persist(next: ProjectVideo[]) {
+  // Reordering writes each changed sortOrder back to the database.
+  function syncOrders(next: ProjectVideo[], previous: ProjectVideo[]) {
     setVideos(next)
-    window.localStorage.setItem(storageKey, JSON.stringify(next))
+    for (const video of next) {
+      const before = previous.find((item) => item.id === video.id)
+      if (before && before.sortOrder !== video.sortOrder)
+        fetch(`/api/admin/videos/${video.id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sortOrder: video.sortOrder }),
+        }).catch(() => undefined)
+    }
   }
 
   function resetForm() {
@@ -108,46 +114,44 @@ export function AdminProjectVideoManager({ projectSlug }: { projectSlug?: string
       setError(t('videos.invalidUrl'))
       return
     }
-    const projectName =
-      projects.find((project) => project.slug === form.projectSlug)?.name ?? form.projectSlug
     const existing = editingId ? videos.find((video) => video.id === editingId) : undefined
-    const nextVideo: ProjectVideo = {
-      id: editingId ?? `local-${Date.now()}`,
+    const payload = {
       projectSlug: form.projectSlug,
-      projectName,
       kind: form.kind,
       title: form.title.trim(),
       description: form.description.trim(),
-      youtubeUrl: youtube.normalizedUrl,
-      youtubeId: youtube.youtubeId,
-      thumbnailUrl: youtube.thumbnailUrl,
+      youtubeUrl: form.youtubeUrl,
       published: form.published,
       sortOrder: existing?.sortOrder ?? visibleVideos.length,
     }
-    const next = editingId
-      ? videos.map((video) => (video.id === editingId ? nextVideo : video))
-      : [...videos, nextVideo]
-    persist(next)
     try {
       const response = await fetch(editingId ? `/api/admin/videos/${editingId}` : '/api/admin/videos', {
         method: editingId ? 'PATCH' : 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, youtubeUrl: form.youtubeUrl, sortOrder: nextVideo.sortOrder }),
+        body: JSON.stringify(payload),
       })
-      if (response.ok) {
-        const result = (await response.json()) as { persisted?: boolean }
-        setMessage(
-          result.persisted
-            ? t('videos.savedToCatalog')
-            : t('videos.savedInBrowser'),
+      if (!response.ok) throw new Error('save failed')
+      const result = (await response.json()) as { video?: ProjectVideo }
+      if (result.video) {
+        const saved = {
+          ...result.video,
+          projectSlug: result.video.projectSlug ?? form.projectSlug,
+          projectName:
+            result.video.projectName ??
+            projects.find((project) => project.slug === form.projectSlug)?.name ??
+            form.projectSlug,
+        }
+        setVideos((current) =>
+          editingId
+            ? current.map((video) => (video.id === editingId ? saved : video))
+            : [...current, saved],
         )
-      } else {
-        setMessage(t('videos.savedInBrowserNoSync'))
       }
+      setMessage(t('videos.savedToCatalog'))
+      resetForm()
     } catch {
-      setMessage(t('videos.savedInBrowserNoSync'))
+      setError(t('videos.savedInBrowserNoSync'))
     }
-    resetForm()
   }
 
   function edit(video: ProjectVideo) {
@@ -158,28 +162,35 @@ export function AdminProjectVideoManager({ projectSlug }: { projectSlug?: string
       title: video.title,
       description: video.description,
       youtubeUrl: video.youtubeUrl,
-      published: video.published,
     })
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   async function remove(video: ProjectVideo) {
-    const next = videos.filter((item) => item.id !== video.id)
-    persist(next)
-    setMessage(`${t('videos.removedPrefix')} “${video.title}”.`)
-    if (!video.id.startsWith('local-'))
-      await fetch(`/api/admin/videos/${video.id}`, { method: 'DELETE' }).catch(() => undefined)
+    try {
+      const response = await fetch(`/api/admin/videos/${video.id}`, { method: 'DELETE' })
+      if (!response.ok) throw new Error('delete failed')
+      setVideos((current) => current.filter((item) => item.id !== video.id))
+      setMessage(`${t('videos.removedPrefix')} “${video.title}”.`)
+    } catch {
+      setError(t('videos.savedInBrowserNoSync'))
+    }
   }
 
   async function togglePublished(video: ProjectVideo) {
-    const next = videos.map((item) => (item.id === video.id ? { ...item, published: !item.published } : item))
-    persist(next)
-    if (!video.id.startsWith('local-'))
-      await fetch(`/api/admin/videos/${video.id}`, {
+    try {
+      const response = await fetch(`/api/admin/videos/${video.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ published: !video.published }),
-      }).catch(() => undefined)
+      })
+      if (!response.ok) throw new Error('toggle failed')
+      setVideos((current) =>
+        current.map((item) => (item.id === video.id ? { ...item, published: !item.published } : item)),
+      )
+    } catch {
+      setError(t('videos.savedInBrowserNoSync'))
+    }
   }
 
   function moveVideo(videoId: string, direction: -1 | 1) {
@@ -197,7 +208,7 @@ export function AdminProjectVideoManager({ projectSlug }: { projectSlug?: string
           ? { ...video, sortOrder: current.sortOrder }
           : video,
     )
-    persist(next)
+    syncOrders(next, videos)
   }
 
   function dropVideo(targetId: string) {
@@ -211,10 +222,11 @@ export function AdminProjectVideoManager({ projectSlug }: { projectSlug?: string
     if (!item) return
     reordered.splice(to, 0, item)
     const positions = new Map(reordered.map((video, index) => [video.id, index]))
-    persist(
+    syncOrders(
       videos.map((video) =>
         positions.has(video.id) ? { ...video, sortOrder: positions.get(video.id) ?? video.sortOrder } : video,
       ),
+      videos,
     )
     setDraggedId(null)
   }
@@ -363,7 +375,7 @@ export function AdminProjectVideoManager({ projectSlug }: { projectSlug?: string
                   : t('videos.allStories')}
               </h2>
             </div>
-            <Badge tone="neutral">`${visibleVideos.length} ${t('videos.stories')} `</Badge>
+            <Badge tone="neutral">{`${visibleVideos.length} ${t('videos.stories')}`}</Badge>
           </div>
           <div className="mt-5 space-y-3">
             {visibleVideos

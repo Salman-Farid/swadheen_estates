@@ -12,18 +12,6 @@ import { Reveal } from '@/components/motion/reveal'
 import { useMotionPreferences } from '@/experience/motion/motion-provider'
 import { cn } from '@/lib/utils'
 
-function getStoredVideos(fallback: ProjectVideo[]): ProjectVideo[] {
-  if (typeof window === 'undefined') return fallback
-  const stored = window.localStorage.getItem('swadheen-project-videos')
-  if (!stored) return fallback
-  try {
-    const localVideos = JSON.parse(stored) as ProjectVideo[]
-    return Array.isArray(localVideos) ? localVideos.filter((video) => video.published) : fallback
-  } catch {
-    return fallback
-  }
-}
-
 function YouTubeFrame({ video, className }: { video: ProjectVideo; className?: string }) {
   const [playing, setPlaying] = useState(false)
   const [ready, setReady] = useState(false)
@@ -90,7 +78,9 @@ function YouTubeFrame({ video, className }: { video: ProjectVideo; className?: s
 
 export function YouTubeShowcase({ videos }: { videos: ProjectVideo[] }) {
   const { reducedMotion } = useMotionPreferences()
-  const [catalog] = useState(() => getStoredVideos(videos))
+  // The catalogue comes from the server (database first, static fallback) —
+  // the admin panel is the single source of truth for what plays here.
+  const catalog = videos
   const [activeShort, setActiveShort] = useState(
     () => catalog.find((video) => video.kind === 'SHORT')?.id ?? '',
   )

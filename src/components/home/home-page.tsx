@@ -30,6 +30,7 @@ import { CinematicJourney } from '@/components/home/cinematic-journey'
 import { useCardAutoSlide } from '@/components/home/use-card-auto-slide'
 import { useLocale } from '@/i18n/locale-provider'
 import type { Property } from '@/types/property'
+import type { ProjectVideo } from '@/types/video'
 
 const journalImages = [
   'https://images.unsplash.com/photo-1511818966892-d7d671e672a2?auto=format&fit=crop&w=1000&q=85',
@@ -39,7 +40,19 @@ const journalImages = [
 
 // `properties` is the live catalogue passed by the server page; the static
 // catalogue is the fallback when no database is configured.
-export function HomePage({ properties = staticProperties }: { properties?: Property[] }) {
+const defaultHeroImages = [
+  'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2400&q=90',
+]
+
+export function HomePage({
+  properties = staticProperties,
+  videos = projectVideos,
+  heroImages = defaultHeroImages,
+}: {
+  properties?: Property[]
+  videos?: ProjectVideo[]
+  heroImages?: string[]
+}) {
   const { t, locale } = useLocale()
   const featuredAll = properties.filter((property) => property.featured)
   const featured = featuredAll.slice(0, 4)
@@ -69,10 +82,7 @@ export function HomePage({ properties = staticProperties }: { properties?: Prope
   return (
     <div className="min-h-screen overflow-x-clip">
       <section className="relative min-h-[700px] bg-ink text-white sm:min-h-[760px]">
-        <CinematicHeroMedia
-          src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2400&q=90"
-          alt={t('home.heroAlt')}
-        />
+        <CinematicHeroMedia images={heroImages} alt={t('home.heroAlt')} />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(15,20,24,.85)_0%,rgba(15,20,24,.43)_48%,rgba(15,20,24,.18)_100%)]" />
         <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(15,20,24,.85)_0%,transparent_52%)]" />
         <div className="grain absolute inset-0" />
@@ -344,7 +354,7 @@ export function HomePage({ properties = staticProperties }: { properties?: Prope
             </div>
           </div>
         </section>
-        <DeferredYouTubeShowcase videos={projectVideos} />
+        <DeferredYouTubeShowcase videos={videos} />
         <section className="section-space">
           <div className="container-shell">
             <SectionHeading

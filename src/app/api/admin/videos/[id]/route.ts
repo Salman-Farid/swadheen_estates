@@ -25,19 +25,28 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
   const access = await authorize(request)
   if ('response' in access) return access.response
   const { id } = await context.params
-  const parsed = videoInputSchema.partial().safeParse(await request.json().catch(() => null))
+  const body = await request.json().catch(() => null)
+  const parsed = videoInputSchema.partial().safeParse(body)
   if (!parsed.success)
     return NextResponse.json({ error: 'Please check the project video details.' }, { status: 400 })
+  // Zod defaults survive .partial(), so a PATCH that only sends one field
+  // would otherwise reset the others (sortOrder, description, views, likes).
+  // Keep only the fields the client actually sent.
+  const sentKeys = new Set(Object.keys(body ?? {}))
   const youtube = parsed.data.youtubeUrl ? parseYouTubeUrl(parsed.data.youtubeUrl) : null
   if (parsed.data.youtubeUrl && !youtube)
     return NextResponse.json({ error: 'Use a valid YouTube URL.' }, { status: 400 })
   if (!env.DATABASE_URL) return NextResponse.json({ ok: true, persisted: false, id })
   try {
     const { db } = await import('@/lib/db')
+    const { projectSlug: _projectSlug, ...rest } = parsed.data
+    const videoData = Object.fromEntries(
+      Object.entries(rest).filter(([key]) => sentKeys.has(key)),
+    )
     const video = await db.projectVideo.update({
       where: { id },
       data: {
-        ...parsed.data,
+        ...videoData,
         ...(youtube
           ? {
               youtubeId: youtube.youtubeId,
