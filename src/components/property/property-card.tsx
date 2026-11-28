@@ -59,7 +59,7 @@ function ActionButton({
         onClick()
       }}
       className={cn(
-        'inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-ink/25 text-white backdrop-blur-md transition hover:bg-ink/60',
+        'inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-ink/45 text-white backdrop-blur-md transition hover:bg-ink/60',
         active && 'border-terracotta bg-terracotta text-white',
       )}
     >
@@ -406,7 +406,7 @@ export function PropertyCard({
             </p>
             <Link
               href={`/properties/${property.slug}`}
-              className="display-type mt-2 block truncate text-[25px] leading-none transition group-hover:text-terracotta"
+              className="display-type mt-2 block truncate text-2xl leading-tight transition group-hover:text-terracotta"
             >
               {title}
             </Link>

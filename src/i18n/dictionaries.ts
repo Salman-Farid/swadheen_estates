@@ -363,7 +363,7 @@ export const en = {
   'detail.requestDocuments': 'Request documents',
   'detail.experienceCopy': 'Walk the spaces in the interactive experience before you visit.',
   'detail.everydayEase': 'Everyday ease',
-  'detail.amenitiesCount': '+{count} more',
+  'detail.amenitiesCount': '{count} in total',
   'detail.keepExploring': 'Keep exploring',
   'detail.mayAlsoLike': 'You may also like',
   'detail.viewAll': 'View all',
@@ -673,7 +673,9 @@ export const en = {
   'privacy.p3': 'Questions? Write to us and a person — not a bot — will reply within a working day.',
   'terms.title': 'Terms of service',
   'terms.p1': 'Prices shown are guide prices, confirmed in writing before any visit or booking.',
+  'terms.diligenceTitle': 'Listings and due diligence',
   'terms.p2': 'Listings are checked on site, but final due diligence always stays with the buyer.',
+  'terms.viewingsTitle': 'Viewings and your contact',
   'terms.p3': 'Viewings are private and by appointment; we never share your contact with third parties.',
 
   // Admin — shell, dashboard, workspace, media, videos, reports, settings
@@ -877,6 +879,8 @@ export const en = {
   'spec.bathrooms': 'Bathrooms',
   'spec.bedrooms': 'Bedrooms',
   'spec.floor': 'Floor',
+  'enquiry.arrangeViewing': 'Arrange a private viewing',
+  'enquiry.sending': 'Sending securely…',
   'enquiry.successTitle': 'Enquiry sent',
   'enquiry.successCopy': 'Our team will reach out shortly.',
 
@@ -1453,7 +1457,7 @@ export const bn: Record<CopyKey, string> = {
   'detail.requestDocuments': 'কাগজপত্র চান',
   'detail.experienceCopy': 'দেখতে যাওয়ার আগে ইন্টারঅ্যাকটিভভাবে ঘরগুলো ঘুরে দেখে নিন।',
   'detail.everydayEase': 'রোজকার সুবিধা',
-  'detail.amenitiesCount': '+{count}টি আরও',
+  'detail.amenitiesCount': 'মোট {count}টি',
   'detail.keepExploring': 'আরও ঘুরে দেখুন',
   'detail.mayAlsoLike': 'আপনার পছন্দ হতে পারে',
   'detail.viewAll': 'সব দেখুন',
@@ -1762,7 +1766,9 @@ export const bn: Record<CopyKey, string> = {
     'কোনো প্রশ্ন আছে? আমাদের লিখুন — একজন মানুষই উত্তর দেবেন, কোনো বট নয় — এক কর্মদিবসের মধ্যে।',
   'terms.title': 'সেবার শর্তাবলি',
   'terms.p1': 'দেখানো দামগুলো আনুমানিক; দেখতে যাওয়া বা বুক করার আগে লিখিতভাবে নিশ্চিত করে দেওয়া হয়।',
+  'terms.diligenceTitle': 'তালিকা ও যাচাই',
   'terms.p2': 'তালিকাগুলো নিজে গিয়ে যাচাই করা হয়, তবে শেষ যাচাইটা সবসময় ক্রেতার নিজের দায়িত্বে থাকে।',
+  'terms.viewingsTitle': 'দেখা ও আপনার যোগাযোগ',
   'terms.p3': 'দেখা হয় একান্তে, সময় ঠিক করে; আপনার যোগাযোগের তথ্য আমরা তৃতীয় কারও সাথে কখনো শেয়ার করি না।',
   // Admin — shell, dashboard, workspace, media, videos, reports, settings
   'admin.workspace': 'কর্মক্ষেত্র',
@@ -1964,6 +1970,8 @@ export const bn: Record<CopyKey, string> = {
   'spec.bathrooms': 'বাথরুম',
   'spec.bedrooms': 'বেডরুম',
   'spec.floor': 'তলা',
+  'enquiry.arrangeViewing': 'প্রাইভেট ভিউয়িং ঠিক করুন',
+  'enquiry.sending': 'নিরাপদে পাঠানো হচ্ছে…',
   'enquiry.successTitle': 'অনুসন্ধান পাঠানো হয়েছে',
   'enquiry.successCopy': 'আমাদের টিম শীঘ্রই যোগাযোগ করবে।',
 

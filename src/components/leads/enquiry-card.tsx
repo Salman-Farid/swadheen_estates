@@ -45,7 +45,7 @@ export function EnquiryCard({ property }: { property: Property }) {
   }
 
   return (
-    <aside className="rounded-panel border border-line bg-stone p-5 shadow-soft sm:p-6 lg:sticky lg:top-6">
+    <aside className="self-start rounded-panel border border-line bg-stone p-5 shadow-soft sm:p-6 lg:sticky lg:top-6">
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="eyebrow">{t('privateViewings')}</p>
@@ -128,10 +128,10 @@ export function EnquiryCard({ property }: { property: Property }) {
           <input tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" name="website" />
           <Button type="submit" size="lg" className="w-full" disabled={state === 'submitting'}>
             {state === 'submitting' ? (
-              'Sending securely…'
+              t('enquiry.sending')
             ) : (
               <>
-                Arrange a private viewing <Send className="h-4 w-4" />
+                {t('enquiry.arrangeViewing')} <Send className="h-4 w-4" />
               </>
             )}
           </Button>
@@ -140,7 +140,7 @@ export function EnquiryCard({ property }: { property: Property }) {
               {error}
             </p>
           )}
-          <p className="flex items-start gap-2 pt-1 text-[10px] leading-4 text-ink/45">
+          <p className="flex items-start gap-2 pt-1 text-[11px] leading-4 text-ink/45">
             <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-moss" />
             {t('form.privacyNote')}
           </p>
@@ -160,7 +160,7 @@ export function EnquiryCard({ property }: { property: Property }) {
           <MessageCircle className="h-3.5 w-3.5" /> {t('whatsapp')}
         </a>
       </div>
-      <div className="mt-4 flex items-center justify-center gap-2 text-[10px] font-semibold text-ink/45">
+      <div className="mt-4 flex items-center justify-center gap-2 text-[11px] font-semibold text-ink/45">
         <Clock3 className="h-3.5 w-3.5" /> {t('form.replyTime')}
       </div>
     </aside>

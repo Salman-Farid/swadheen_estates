@@ -106,9 +106,7 @@ export function PropertyDetailPage({
           </div>
           <div className="mt-4 flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
             <div>
-              <h1 className="display-type max-w-3xl text-[clamp(2.75rem,12vw,3.75rem)] leading-[.87] sm:text-7xl">
-                {title}
-              </h1>
+              <h1 className="display-type max-w-3xl">{title}</h1>
               <p className="mt-4 flex items-center gap-2 text-sm text-ink/55">
                 <MapPin className="h-4 w-4 text-terracotta" />
                 {localizedText(property.location, property.locationBn, locale)}
@@ -156,7 +154,7 @@ export function PropertyDetailPage({
             />
           </div>
         </div>
-        <div className="container-shell grid gap-12 pb-24 pt-12 lg:grid-cols-[1.45fr_.65fr]">
+        <div className="container-shell grid items-start gap-12 pb-24 pt-12 lg:grid-cols-[1.45fr_.65fr]">
           <div>
             <div className="grid grid-cols-2 gap-x-4 gap-y-5 border-b border-line pb-7 sm:flex sm:flex-wrap sm:gap-7">
               <Spec
@@ -232,7 +230,7 @@ export function PropertyDetailPage({
                   <h2 className="display-type mt-3 text-4xl">{t('detail.everydayEase')}</h2>
                 </div>
                 <span className="hidden text-xs text-ink/40 sm:block">
-                  {property.amenities.length} {t('detail.amenitiesCount')}
+                  {t('detail.amenitiesCount', { count: property.amenities.length })}
                 </span>
               </div>
               <div className="mt-7 grid gap-x-5 gap-y-5 sm:grid-cols-2">

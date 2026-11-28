@@ -935,7 +935,9 @@ export function AdminMediaPage() {
                   <button
                     type="button"
                     className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-paper/90 opacity-0 transition group-hover:opacity-100"
-                    aria-label={`${t('admin.moreOptionsFor')} ${localizedText(property.title, property.titleBn, locale)}`}
+                    aria-label={t('admin.moreOptionsFor', {
+                      name: localizedText(property.title, property.titleBn, locale),
+                    })}
                   >
                     <MoreHorizontal className="h-4 w-4" />
                   </button>

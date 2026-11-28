@@ -51,7 +51,7 @@ export function RequestPage() {
         <div className="grid gap-12 lg:grid-cols-[.8fr_1.2fr] lg:items-start">
           <div className="lg:sticky lg:top-10">
             <p className="eyebrow">{t('request.eyebrow')}</p>
-            <h1 className="display-type mt-4 text-[clamp(3.4rem,15vw,6rem)] leading-[.82] sm:text-8xl">
+            <h1 className="display-type mt-4">
               {t('request.title1')}
               <br />
               <em className="font-normal text-terracotta">{t('request.title2')}</em>
@@ -96,7 +96,7 @@ export function AboutPage() {
           <div className="grid gap-12 lg:grid-cols-[.8fr_1.2fr] lg:items-end">
             <div>
               <p className="eyebrow">{t('about.eyebrow')}</p>
-              <h1 className="display-type mt-4 text-[clamp(3.4rem,15vw,6rem)] leading-[.82] sm:text-8xl">
+              <h1 className="display-type mt-4">
                 {t('about.title1')}
                 <br />
                 <em className="font-normal text-terracotta">{t('about.title2')}</em>
@@ -113,7 +113,7 @@ export function AboutPage() {
               className="object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-ink/60 to-transparent" />
-            <p className="absolute bottom-7 left-7 max-w-md font-display text-4xl leading-none text-white sm:text-6xl">
+            <p className="absolute bottom-7 left-7 max-w-md font-display text-3xl leading-tight text-white sm:text-5xl">
               {t('about.overlay')}
             </p>
           </div>
@@ -167,7 +167,7 @@ export function AboutPage() {
                     alt={person.name}
                     fill
                     sizes="(max-width: 640px) 100vw, 33vw"
-                    className="object-cover transition duration-700 grayscale hover:grayscale-0"
+                    className="object-cover transition duration-700"
                   />
                 </div>
                 <p className="mt-4 text-sm font-bold">{person.name}</p>
@@ -193,7 +193,7 @@ export function ContactPage() {
         <div className="grid gap-12 lg:grid-cols-[.8fr_1.2fr]">
           <div>
             <p className="eyebrow">{t('contact.eyebrow')}</p>
-            <h1 className="display-type mt-4 text-[clamp(3.4rem,15vw,6rem)] leading-[.84] sm:text-8xl">
+            <h1 className="display-type mt-4">
               {t('contact.title1')}
               <br />
               <em className="font-normal text-terracotta">{t('contact.title2')}</em>
@@ -235,16 +235,18 @@ export function ContactPage() {
               </p>
             </div>
           </div>
-          <div className="relative min-h-[520px] overflow-hidden rounded-panel bg-[#d9ded7] bg-[radial-gradient(circle_at_60%_35%,#f5f0e6_0,#d9ded7_45%,#bfcac0_100%)]">
-            <div className="absolute inset-0 opacity-35 [background-image:linear-gradient(30deg,transparent_48%,rgba(255,255,255,.7)_49%,rgba(255,255,255,.7)_51%,transparent_52%),linear-gradient(120deg,transparent_48%,rgba(122,145,126,.3)_49%,rgba(122,145,126,.3)_51%,transparent_52%)] [background-size:130px_130px,220px_220px]" />
-            <div className="absolute left-[53%] top-[47%] -translate-x-1/2 -translate-y-1/2">
-              <span className="flex h-16 w-16 animate-pulse-ring items-center justify-center rounded-full border-4 border-paper bg-terracotta text-white shadow-float">
-                <MapPin className="h-6 w-6" fill="currentColor" />
-              </span>
-              <span className="absolute left-1/2 top-full mt-3 -translate-x-1/2 whitespace-nowrap rounded-full bg-ink px-3 py-2 text-[10px] font-bold text-paper">
-                {t('contact.mapTag')}
-              </span>
-            </div>
+          <div className="relative min-h-[420px] overflow-hidden rounded-panel border border-line bg-stone lg:min-h-[520px]">
+            <iframe
+              title={t('contact.mapTag')}
+              src="https://www.google.com/maps?q=Road%2011%2C%20Banani%2C%20Dhaka%201213&output=embed"
+              className="absolute inset-0 h-full w-full border-0"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              allowFullScreen
+            />
+            <span className="pointer-events-none absolute bottom-4 left-4 flex items-center gap-2 rounded-full bg-ink px-3.5 py-2 text-[11px] font-bold text-paper shadow-float">
+              <MapPin className="h-3.5 w-3.5 text-gold" /> {t('contact.studioAddress')}
+            </span>
           </div>
         </div>
       </main>
@@ -254,42 +256,64 @@ export function ContactPage() {
 }
 
 export function JournalPage() {
-  const { t, locale } = useLocale()
+  const { t } = useLocale()
+  // The journal shows the same real editorial notes as the homepage preview
+  // (design audit fix, 2026-11-28). It previously generated fake article
+  // cards from property listings — templated titles that only swapped the
+  // area name, sequential 04–09 minute read times, and titles that did not
+  // match the homepage's journal section.
+  const articles = [
+    {
+      category: t('journal.categoryFieldNotes'),
+      title: t('journal.titleNeighbourhood'),
+      date: t('journal.readMinutes05'),
+      image:
+        'https://images.unsplash.com/photo-1511818966892-d7d671e672a2?auto=format&fit=crop&w=1000&q=85',
+    },
+    {
+      category: t('journal.categoryBetterBrief'),
+      title: t('journal.titleFiveQuestions'),
+      date: t('journal.readMinutes07'),
+      image:
+        'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1000&q=85',
+    },
+    {
+      category: t('journal.categoryInsideGrove'),
+      title: t('journal.titleChangingLight'),
+      date: t('journal.readMinutes04'),
+      image:
+        'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1000&q=85',
+    },
+  ]
   return (
     <div className="min-h-screen">
       <Header />
       <main className="container-shell section-space">
         <p className="eyebrow">{t('journal.eyebrow')}</p>
-        <h1 className="display-type mt-4 text-[clamp(3.4rem,15vw,7rem)] leading-[.82] sm:text-9xl">
+        <h1 className="display-type mt-4">
           {t('journal.title1')}
           <br />
           <em className="font-normal text-terracotta">{t('journal.title2')}</em>
         </h1>
-        <div className="mt-16 grid gap-10 md:grid-cols-2 lg:grid-cols-3">
-          {properties.slice(0, 6).map((property, index) => (
-            <Reveal key={property.id} delay={index * 0.04}>
-              <Link href={`/properties/${property.slug}`} className="group block">
+        <div className="mt-14 grid gap-10 md:grid-cols-2 lg:grid-cols-3">
+          {articles.map((article, index) => (
+            <Reveal key={article.title} delay={index * 0.04}>
+              <article>
                 <div className="image-frame aspect-[4/3] rounded-panel">
                   <Image
-                    src={property.gallery[1] ?? property.image}
-                    alt={localizedText(property.title, property.titleBn, locale)}
+                    src={article.image}
+                    alt={article.title}
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover"
                   />
                 </div>
-                <p className="eyebrow mt-5">
-                  {t('journal.fieldNote')} · {String(index + 4).padStart(2, '0')} {t('journal.minRead')}
-                </p>
-                <h2 className="display-type mt-3 text-3xl leading-[.94] transition group-hover:text-terracotta">
-                  {t('journal.cardTitle', {
-                    place: localizedText(property.location, property.locationBn, locale).split(',')[0] ?? '',
-                  })}
-                </h2>
-                <span className="mt-4 inline-flex items-center gap-2 text-xs font-bold">
-                  {t('journal.readNote')} <ArrowUpRight className="h-3.5 w-3.5 text-terracotta" />
-                </span>
-              </Link>
+                <div className="mt-5 flex items-center justify-between text-[11px] font-bold uppercase tracking-[.14em] text-terracotta">
+                  <span>{article.category}</span>
+                  <span className="text-ink/40">{article.date}</span>
+                </div>
+                <h2 className="display-type mt-3">{article.title}</h2>
+              </article>
             </Reveal>
           ))}
         </div>
@@ -324,10 +348,10 @@ export function ProjectsPage({
             images={projectProperties.flatMap((property) => property.gallery).slice(0, 6)}
             title={t('project.galleryTitle')}
           />
-          <div className="container-shell relative flex min-h-[620px] items-end pb-20">
+          <div className="container-shell relative flex min-h-[620px] items-end pb-24">
             <div>
               <p className="eyebrow text-gold">{t('project.eyebrow')}</p>
-              <h1 className="display-type mt-5 max-w-3xl text-[clamp(3.4rem,15vw,7rem)] leading-[.8] sm:text-9xl">
+              <h1 className="display-type mt-5 max-w-3xl">
                 {t('project.title1')}
                 <br />
                 <em className="font-normal text-gold">{t('project.title2')}</em>
@@ -373,7 +397,13 @@ export function ProjectsPage({
               title={t('project.availableTitle')}
               description={t('project.availableDescription')}
             />
-            <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            <div
+              className={
+                projectProperties.length === 2
+                  ? 'mt-10 grid max-w-5xl gap-8 sm:grid-cols-2'
+                  : 'mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3'
+              }
+            >
               {projectProperties.map((property) => (
                 <PropertyCard key={property.id} property={property} />
               ))}
@@ -418,7 +448,7 @@ export function ProjectsPage({
           <div className="rounded-panel bg-moss p-8 text-paper sm:p-14">
             <p className="eyebrow text-gold">{t('project.ctaEyebrow')}</p>
             <div className="mt-5 flex flex-col justify-between gap-8 md:flex-row md:items-end">
-              <h2 className="display-type max-w-2xl text-[clamp(2.75rem,11vw,4.5rem)] leading-[.88] sm:text-7xl">
+              <h2 className="display-type max-w-2xl">
                 {t('project.ctaTitle1')}
                 <br />
                 <em className="font-normal text-gold">{t('project.ctaTitle2')}</em>
@@ -456,7 +486,7 @@ export function ProjectsIndex({ projects }: { projects: Project[] }) {
               {t('projectsIndex.empty')}
             </p>
           ) : (
-            <div className="grid gap-8 sm:grid-cols-2">
+            <div className={projects.length === 1 ? 'grid max-w-2xl gap-8' : 'grid gap-8 sm:grid-cols-2'}>
               {projects.map((project) => (
                 <Link
                   key={project.id}
@@ -526,9 +556,7 @@ export function DbProjectPage({
           <div className="container-shell relative flex min-h-[560px] items-end pb-16">
             <div>
               <p className="eyebrow text-gold">{t('projectsIndex.eyebrow')}</p>
-              <h1 className="display-type mt-5 max-w-3xl text-[clamp(2.75rem,11vw,5.5rem)] leading-[.85]">
-                {project.name}
-              </h1>
+              <h1 className="display-type mt-5 max-w-3xl">{project.name}</h1>
               <p className="mt-5 flex items-center gap-2 text-sm text-white/70">
                 <MapPin className="h-4 w-4 shrink-0" /> {project.location}
               </p>
@@ -576,9 +604,7 @@ export function DbProjectPage({
           <div className="rounded-panel bg-moss p-8 text-paper sm:p-14">
             <p className="eyebrow text-gold">{t('project.ctaEyebrow')}</p>
             <div className="mt-5 flex flex-col justify-between gap-8 md:flex-row md:items-end">
-              <h2 className="display-type max-w-2xl text-[clamp(2.5rem,9vw,4rem)] leading-[.9] sm:text-7xl">
-                {t('project.genericCtaTitle')}
-              </h2>
+              <h2 className="display-type max-w-2xl">{t('project.genericCtaTitle')}</h2>
               <ButtonLink href="/request" variant="dark">
                 {t('arrangeViewing')} <ArrowUpRight className="h-4 w-4" />
               </ButtonLink>

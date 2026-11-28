@@ -43,14 +43,14 @@ export function MediaDropzone() {
           id: `${file.name}-${file.lastModified}`,
           file,
           status: 'error',
-          message: t('dropzone.unsupportedType'),
+          message: t('dropzone.unsupportedType', { name: file.name }),
         })
       } else if (file.size > maxSize) {
         next.push({
           id: `${file.name}-${file.lastModified}`,
           file,
           status: 'error',
-          message: t('dropzone.tooLarge'),
+          message: t('dropzone.tooLarge', { name: file.name, size: '150 MB' }),
         })
       } else {
         next.push({ id: `${file.name}-${file.lastModified}`, file, status: 'ready' })

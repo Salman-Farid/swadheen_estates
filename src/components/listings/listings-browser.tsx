@@ -36,7 +36,7 @@ function MapPanel({ count }: { count: number }) {
       <div className="absolute left-[28%] top-[57%] h-1 w-[42%] rotate-[34deg] bg-white/80" />
       <div className="absolute left-5 top-5 rounded-full border border-white/60 bg-paper/90 px-3 py-2 text-[10px] font-bold uppercase tracking-[.14em] text-ink shadow-soft backdrop-blur">
         <MapPin className="mr-1.5 inline h-3.5 w-3.5 text-terracotta" />
-        {t('map.resultsCount').replace('{n}', String(count))}
+        {t('map.resultsCount', { count })}
       </div>
       {points.map(([left, top], index) => (
         <button
@@ -245,7 +245,7 @@ export function ListingsBrowser({ properties = staticProperties }: { properties?
       </div>
       <div className="mt-7 flex flex-wrap items-center justify-between gap-3">
         <p className="min-w-0 flex-1 text-sm font-semibold">
-          <span className="numeric">{filtered.length}</span> {t('listings.resultsCount')}{' '}
+          {t('listings.resultsCount', { count: filtered.length })}{' '}
           <span className="font-normal text-ink/45">· {t('listings.curated')}</span>
         </p>
         <div className="flex w-full min-w-0 items-center justify-end gap-2 lg:hidden">
@@ -446,7 +446,7 @@ export function ListingsBrowser({ properties = staticProperties }: { properties?
                 </label>
               </div>
               <Button className="mt-7 w-full" size="lg" onClick={() => setFilterOpen(false)}>
-                {t('filter.showCount').replace('{n}', String(filtered.length))}
+                {t('filter.showCount', { count: filtered.length })}
               </Button>
             </motion.div>
           </motion.div>

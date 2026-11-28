@@ -14,16 +14,18 @@ export function RegisterPageContent({ nextPath }: { nextPath: string }) {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_65%_30%,hsl(var(--terracotta)/.35),transparent_45%),linear-gradient(145deg,#161c21,#293934)]" />
         <div className="absolute -bottom-24 -left-20 h-[32rem] w-[32rem] rounded-full border border-white/10" />
         <div className="absolute -bottom-12 -left-8 h-[20rem] w-[20rem] rounded-full border border-white/10" />
-        <div className="relative flex h-full flex-col justify-between p-12">
+        <div className="relative flex h-full flex-col p-12">
           <Logo inverse />
-          <div className="max-w-md">
-            <p className="eyebrow text-gold">{t('yourPrivateSpace')}</p>
-            <h1 className="display-type mt-5 text-[clamp(3.4rem,15vw,7rem)] leading-[.82]">
-              {t('login.detailsTitle')}
-              <br />
-              <em className="font-normal text-gold">{t('login.detailsTitle2')}</em>
-            </h1>
-            <p className="mt-6 text-sm leading-7 text-paper/55">{t('register.panelCopy')}</p>
+          <div className="flex flex-1 items-center">
+            <div className="max-w-md">
+              <p className="eyebrow text-gold">{t('yourPrivateSpace')}</p>
+              <h1 className="display-type mt-5">
+                {t('login.detailsTitle')}
+                <br />
+                <em className="font-normal text-gold">{t('login.detailsTitle2')}</em>
+              </h1>
+              <p className="mt-6 text-sm leading-7 text-paper/55">{t('register.panelCopy')}</p>
+            </div>
           </div>
           <p className="text-[10px] uppercase tracking-[.18em] text-paper/35">Swadheen Estates · Dhaka</p>
         </div>
@@ -34,11 +36,13 @@ export function RegisterPageContent({ nextPath }: { nextPath: string }) {
             <Link href="/" className="inline-flex items-center gap-2 text-xs font-bold text-ink/50">
               <ArrowLeft className="h-3.5 w-3.5" /> {t('backToSite')}
             </Link>
-            <Logo />
+            <span className="lg:hidden">
+              <Logo />
+            </span>
           </div>
-          <div className="mt-20">
+          <div className="mt-14">
             <p className="eyebrow">{t('register.eyebrow')}</p>
-            <h2 className="display-type mt-4 text-[clamp(2.75rem,12vw,3.5rem)] leading-[.86]">
+            <h2 className="display-type mt-4">
               {t('register.title1')}
               <br />
               <em className="font-normal text-terracotta">{t('register.title2')}</em>

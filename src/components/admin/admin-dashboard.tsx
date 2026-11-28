@@ -241,7 +241,13 @@ function MetricCard({ item, index }: { item: (typeof kpis)[number]; index: numbe
 }
 
 export function AdminDashboard() {
-  const { t } = useLocale()
+  const { t, locale } = useLocale()
+  const today = new Intl.DateTimeFormat(locale === 'bn' ? 'bn-BD' : 'en-GB', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  }).format(new Date())
   const ranges = [t('admin.last7Days'), t('admin.last30Days'), t('admin.thisYear')]
   const [range, setRange] = useState(ranges[1] ?? '')
   const [stageFilter, setStageFilter] = useState<string | null>(null)
@@ -253,7 +259,7 @@ export function AdminDashboard() {
     <div className="mx-auto max-w-[1440px]">
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
-          <p className="eyebrow">{t('admin.todayDate')}</p>
+          <p className="eyebrow">{t('admin.todayDate', { date: today })}</p>
           <h1 className="display-type mt-3 text-5xl leading-[.9]">
             {t('admin.goodMorning')},
             <br />
@@ -484,7 +490,7 @@ export function AdminDashboard() {
                     <button
                       type="button"
                       className="inline-flex h-8 w-8 items-center justify-center rounded-full opacity-40 transition hover:bg-stone hover:opacity-100"
-                      aria-label={`${t('admin.moreActionsFor')} ${lead.name}`}
+                      aria-label={t('admin.moreActionsFor', { name: lead.name })}
                     >
                       <MoreHorizontal className="h-4 w-4" />
                     </button>

@@ -56,7 +56,7 @@ export function RequestForm() {
             setStep(1)
           }}
         >
-          Send another request
+          {t('form.sendAnotherRequest')}
         </Button>
       </div>
     )
@@ -65,12 +65,12 @@ export function RequestForm() {
     <form onSubmit={submit} className="rounded-panel border border-line bg-paper p-5 shadow-soft sm:p-8">
       <div className="flex items-center justify-between border-b border-line pb-5">
         <div>
-          <p className="eyebrow">{t('form.stepOf', { step })}</p>
+          <p className="eyebrow">{t('form.stepOf', { step, total: 2 })}</p>
           <p className="mt-2 text-lg font-bold">{step === 1 ? t('request.step1Title') : t('request.step2Title')}</p>
         </div>
-        <div className="flex gap-1">
-          <span className={`h-1.5 w-10 rounded-full ${step >= 1 ? 'bg-terracotta' : 'bg-line'}`} />
-          <span className={`h-1.5 w-10 rounded-full ${step >= 2 ? 'bg-terracotta' : 'bg-line'}`} />
+        <div className="flex w-28 gap-1.5 sm:w-36">
+          <span className={`h-1.5 flex-1 rounded-full ${step >= 1 ? 'bg-terracotta' : 'bg-line'}`} />
+          <span className={`h-1.5 flex-1 rounded-full ${step >= 2 ? 'bg-terracotta' : 'bg-line'}`} />
         </div>
       </div>
       {step === 1 ? (

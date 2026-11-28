@@ -80,7 +80,7 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
           </>
         )}
       </Button>
-      <p className="flex items-start gap-2 pt-2 text-[10px] leading-4 text-ink/45">
+      <p className="flex items-start gap-2 pt-2 text-[11px] leading-4 text-ink/45">
         <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-moss" />
         {t('form.sessionNote')}
       </p>

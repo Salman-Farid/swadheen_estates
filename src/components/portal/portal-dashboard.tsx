@@ -131,7 +131,7 @@ export function PortalDashboard() {
                       <p className={cn('text-xs font-bold', !item.done && !item.active && 'text-ink/40')}>
                         {item.label}
                       </p>
-                      <p className="mt-1 text-[10px] text-ink/40">{item.date}</p>
+                      <p className="mt-1 text-[11px] text-ink/40">{item.date}</p>
                     </div>
                     {index === 0 && (
                       <CheckCircle2 className="absolute right-3 top-0 hidden h-4 w-4 text-moss sm:block" />
@@ -156,7 +156,7 @@ export function PortalDashboard() {
               <p className="mt-5 text-sm leading-6 text-paper/60">{t('portal.advisorQuote')}</p>
               <div className="mt-6 flex gap-2">
                 <a
-                  href="tel:+8801700000000"
+                  href="tel:+8801810774478"
                   className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-paper py-3 text-xs font-bold text-ink"
                 >
                   <Clock3 className="h-3.5 w-3.5" /> {t('portal.messageAdvisor')}
@@ -198,7 +198,7 @@ export function PortalDashboard() {
               ))}
             </div>
           ) : saved.length === 0 ? (
-            <div className="mt-8 rounded-panel border border-dashed border-line bg-paper px-6 py-12 text-center">
+            <div className="mt-8 rounded-panel border border-dashed border-line bg-paper px-6 py-8 text-center">
               <Heart className="mx-auto h-6 w-6 text-terracotta/60" />
               <p className="mt-4 text-sm font-bold">{t('portal.noSavedTitle')}</p>
               <p className="mt-2 text-xs leading-5 text-ink/55">{t('portal.noSavedBody')}</p>

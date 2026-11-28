@@ -40,7 +40,7 @@
     letter-spacing: -0.045em;
   }
   .eyebrow {
-    @apply text-[10px] font-bold uppercase tracking-[0.2em] text-terracotta;
+    @apply text-[11px] font-bold uppercase tracking-[0.18em] text-terracotta;
   }
   .muted-copy {
     color: hsl(var(--text-secondary));
@@ -93,31 +93,44 @@
   }
 }
 
+/* One type scale for the whole site (design audit, 2026-11-28). Display
+   headings step gently instead of jumping from 16px body copy to 110px+
+   headlines, and the fluid clamps keep the same proportions on mobile.
+   Heading accent lines are never italic: italic Bengali glyphs lean hard
+   and their descenders crowd the copy below. The home hero keeps its own
+   sizing via .hero-display because its rotating headline is longer. */
+.display-type em {
+  font-style: normal;
+}
+h1.display-type:not(.hero-display) {
+  font-size: clamp(2.6rem, 6.5vw, 4.5rem) !important;
+  line-height: 1.04 !important;
+  letter-spacing: -0.02em !important;
+}
+h2.display-type {
+  font-size: clamp(1.9rem, 4.2vw, 3rem) !important;
+  line-height: 1.12 !important;
+  letter-spacing: -0.015em !important;
+}
+h3.display-type {
+  font-size: clamp(1.45rem, 2.8vw, 2.1rem) !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.01em !important;
+}
 /* Bengali script renders visually larger than Latin at the same px size
-   and needs extra leading for matras. Scale display type down and relax
-   the tight Latin-optimized tracking when the active locale is bn. */
+   and needs extra leading for matras. */
 html[data-locale='bn'] .display-type {
   font-family: var(--font-display);
   letter-spacing: -0.01em;
 }
-html[data-locale='bn'] h1.display-type {
-  font-size: clamp(2.35rem, 10.5vw, 5.5rem) !important;
-  line-height: 1.1 !important;
-  letter-spacing: -0.02em !important;
+html[data-locale='bn'] h1.display-type:not(.hero-display) {
+  line-height: 1.14 !important;
 }
 html[data-locale='bn'] h2.display-type {
-  font-size: clamp(1.65rem, 5vw, 3.1rem) !important;
-  line-height: 1.18 !important;
-  letter-spacing: -0.01em !important;
+  line-height: 1.22 !important;
 }
 html[data-locale='bn'] h3.display-type {
-  font-size: clamp(1.35rem, 3.8vw, 2.4rem) !important;
-  line-height: 1.22 !important;
-  letter-spacing: 0 !important;
-}
-html[data-locale='bn'] .display-type:not(h1):not(h2):not(h3) {
-  line-height: 1.3;
-  letter-spacing: 0;
+  line-height: 1.28 !important;
 }
 html[data-locale='bn'] body {
   line-height: 1.7;
